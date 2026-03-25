@@ -9,22 +9,14 @@
             --glass: rgba(255, 255, 255, 0.2);
             --border: rgba(255, 255, 255, 0.4);
             --blur: blur(15px);
-            --primary: #007aff; /* iOS Blue */
+            --primary: #007aff; 
         }
 
         body, html {
             margin: 0; padding: 0; height: 100%; width: 100%;
-            overflow: hidden; background: #000; /* Video တက်မလာခင် မည်းထားပေးတာ */
+            overflow: hidden; background: #d0f0f5; /* နဂို Background အရောင် ပြန်ထားပေးပါတယ် */
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             user-select: none; -webkit-user-select: none;
-        }
-
-        /* Background Video (four.mp4) */
-        #bg-video-four {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover;
-            z-index: 1; /* အောက်ဆုံးမှာထားမယ် */
         }
 
         /* Screens */
@@ -35,10 +27,7 @@
         }
 
         /* --- FIRST SCREEN --- */
-        #first-screen { 
-            background: rgba(208, 240, 245, 0.3); /* နောက်ခံ video မြင်ရအောင် ပေါ့ပေါ့လေးပဲထားမယ် */
-            backdrop-filter: blur(2px);
-        }
+        #first-screen { background: #d0f0f5; }
         
         .bowl-container {
             position: relative;
@@ -65,7 +54,6 @@
         .tap-text {
             margin-top: 15px; color: #1a4d55;
             background: rgba(255,255,255,0.4); border-radius: 10px; padding: 5px 15px;
-            backdrop-filter: blur(5px);
         }
 
         /* --- iOS DESIGN MESSAGE BOX --- */
@@ -96,7 +84,7 @@
         /* --- SPLASH VIDEO (second.mp4) --- */
         .fs-video {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; display: none; z-index: 50; background: #000;
+            object-fit: fill; display: none; z-index: 50; background: #000;
         }
 
         /* --- FINAL SCREEN (third.mp4) --- */
@@ -140,7 +128,7 @@
 </head>
 <body>
 
-    <video id="bg-video-four" autoplay muted loop playsinline>
+    <video id="bg-audio-four" loop style="display:none;">
         <source src="four.mp4" type="video/mp4">
     </video>
 
@@ -192,7 +180,6 @@
     </div>
 
     <script>
-        // 1. မိုးရေစက်လေးများ ဖန်တီးခြင်း
         function makeRainInside() {
             const container = document.getElementById('rain');
             for (let i = 0; i < 30; i++) {
@@ -206,12 +193,13 @@
         }
         makeRainInside();
 
-        // 2. Blessing Alert ပြခြင်း
+        // ပထမ Screen မှာ ဖလားကို နှိပ်လိုက်တာနဲ့ နောက်ခံအသံ စဖွင့်မယ်
         function showBlessing() {
+            const bgAudio = document.getElementById('bg-audio-four');
+            bgAudio.play().catch(e => console.log("Autoplay blocked, wait for next click"));
             document.getElementById('blessing-alert').style.display = 'flex';
         }
 
-        // 3. Splash Video (second.mp4) စဖွင့်ခြင်း
         function startSplash() {
             document.getElementById('blessing-alert').style.display = 'none';
             document.getElementById('first-screen').classList.add('hidden');
@@ -227,13 +215,12 @@
             };
         }
 
-        // 4. Final Music Video (third.mp4) ဖွင့်ခြင်း နှင့် Background (four.mp4) ပိတ်ခြင်း
         function startMusic() {
-            // Background Video (four.mp4) ကို ဖျောက်ပြီး ရပ်ပစ်မည်
-            const bgFour = document.getElementById('bg-video-four');
-            if(bgFour) {
-                bgFour.pause();
-                bgFour.style.display = 'none';
+            // third.mp4 စဖွင့်ချိန်မှာ နောက်ခံအသံ (four.mp4) ကို လုံးဝရပ်ပစ်မယ်
+            const bgAudio = document.getElementById('bg-audio-four');
+            if(bgAudio) {
+                bgAudio.pause();
+                bgAudio.currentTime = 0;
             }
 
             document.getElementById('final-screen').classList.remove('hidden');
@@ -244,13 +231,11 @@
             music.play();
         }
 
-        // 5. ကျေးဇူးတင်လွှာပြခြင်း
         function sayThankYou() {
             document.getElementById('vid-music').pause();
             document.getElementById('thankyou-alert').style.display = 'flex';
         }
 
-        // 6. ပိတ်ခြင်း (User Tab ပိတ်ရန် အသိပေး)
         function closeApp() {
             document.getElementById('thankyou-alert').style.display = 'none';
             alert("ကျေးဇူးတင်ပါတယ်။ Browser Tab ကို ပိတ်နိုင်ပါပြီ။");
